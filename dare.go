@@ -248,9 +248,6 @@ func (ad *authDecV20) Open(dst, src []byte) error {
 	if headerSize+header.Length()+tagSize != len(src) {
 		return errInvalidPayloadSize
 	}
-	if !header.IsFinal() && header.Length() != maxPayloadSize {
-		return errInvalidPayloadSize
-	}
 	refNonce := ad.refHeader.Nonce()
 	if header.IsFinal() {
 		ad.finalized = true

@@ -62,6 +62,13 @@ func (w *decWriter) Write(p []byte) (n int, err error) {
 	return w.dst.Write(p)
 }
 
+func (w *decWriter) Flush() error {
+	if flusher, ok := w.dst.(WriteFlushCloser); ok {
+		return flusher.Flush()
+	}
+	return nil
+}
+
 func (w *decWriter) Close() error {
 	if closer, ok := w.dst.(io.Closer); ok {
 		return closer.Close()

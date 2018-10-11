@@ -82,6 +82,15 @@ var (
 	errUnexpectedData = Error{"sio: unexpected data after final package"}
 )
 
+// WriteFlushCloser is the interface used for the encrypt
+// and decrypt writers. The Flush is added so that any
+// blocking reads won't hold up the buffered data from being
+// sent to the destination.
+type WriteFlushCloser interface {
+	io.WriteCloser
+	Flush() error
+}
+
 // Error is the error returned by an io.Reader or io.Writer
 // if the encrypted data cannot be decrypted because it is
 // malformed or not authentic.
@@ -225,7 +234,7 @@ func DecryptReader(src io.Reader, config Config) (io.Reader, error) {
 //
 // The returned io.WriteCloser must be closed successfully to finalize the
 // encryption process.
-func EncryptWriter(dst io.Writer, config Config) (io.WriteCloser, error) {
+func EncryptWriter(dst io.Writer, config Config) (WriteFlushCloser, error) {
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
 	}
@@ -242,7 +251,7 @@ func EncryptWriter(dst io.Writer, config Config) (io.WriteCloser, error) {
 // The returned io.WriteCloser must be closed successfully to finalize the
 // decryption process. The returned io.WriteCloser returns an error of
 // type sio.Error if the decryption fails.
-func DecryptWriter(dst io.Writer, config Config) (io.WriteCloser, error) {
+func DecryptWriter(dst io.Writer, config Config) (WriteFlushCloser, error) {
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
 	}

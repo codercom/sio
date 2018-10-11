@@ -93,6 +93,26 @@ func (w *decWriterV10) Write(p []byte) (n int, err error) {
 	return n, nil
 }
 
+func (w *decWriterV10) Flush() error {
+	if w.offset > 0 {
+		if w.offset <= headerSize+tagSize {
+			return errInvalidPayloadSize // the payload is always > 0
+		}
+		header := headerV10(w.buffer[:headerSize])
+		if w.offset < headerSize+header.Len()+tagSize {
+			return errInvalidPayloadSize // there is less data than specified by the header
+		}
+		if err := w.Open(w.buffer.Payload(), w.buffer[:w.buffer.Length()]); err != nil {
+			return err
+		}
+		if err := flush(w.dst, w.buffer.Payload()); err != nil { // write to underlying io.Writer
+			return err
+		}
+		w.offset = 0
+	}
+	return nil
+}
+
 func (w *decWriterV10) Close() error {
 	if w.offset > 0 {
 		if w.offset <= headerSize+tagSize {
@@ -172,6 +192,17 @@ func (w *encWriterV10) Write(p []byte) (n int, err error) {
 		n += w.offset
 	}
 	return
+}
+
+func (w *encWriterV10) Flush() error {
+	if w.offset > 0 {
+		w.Seal(w.buffer[:], w.buffer[headerSize:headerSize+w.offset])
+		if err := flush(w.dst, w.buffer[:w.buffer.Length()]); err != nil { // write to underlying io.Writer
+			return err
+		}
+		w.offset = 0
+	}
+	return nil
 }
 
 func (w *encWriterV10) Close() error {

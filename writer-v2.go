@@ -79,6 +79,22 @@ func (w *encWriterV20) Write(p []byte) (n int, err error) {
 	return n, nil
 }
 
+func (w *encWriterV20) Flush() error {
+	if w.finalized {
+		// The caller closed the encWriterV20 instance (called encWriterV20.Close()).
+		// This is a bug in the calling code - Flush after Close is not allowed.
+		panic("sio: write to stream after close")
+	}
+	if w.offset > 0 {
+		w.Seal(w.buffer, w.buffer[headerSize:headerSize+w.offset])
+		if err := flush(w.dst, w.buffer[:headerSize+w.offset+tagSize]); err != nil {
+			return err
+		}
+		w.offset = 0
+	}
+	return nil
+}
+
 func (w *encWriterV20) Close() error {
 	if w.offset > 0 { // true if at least one Write call happened
 		w.SealFinal(w.buffer, w.buffer[headerSize:headerSize+w.offset])
@@ -155,6 +171,22 @@ func (w *decWriterV20) Write(p []byte) (n int, err error) {
 		n += w.offset
 	}
 	return n, nil
+}
+
+func (w *decWriterV20) Flush() error {
+	if w.offset > 0 {
+		if w.offset <= headerSize+tagSize { // the payload is always > 0
+			return errInvalidPayloadSize
+		}
+		if err := w.Open(w.buffer[headerSize:w.offset-tagSize], w.buffer[:w.offset]); err != nil {
+			return err
+		}
+		if err := flush(w.dst, w.buffer[headerSize:w.offset-tagSize]); err != nil { // write to underlying io.Writer
+			return err
+		}
+		w.offset = 0
+	}
+	return nil
 }
 
 func (w *decWriterV20) Close() error {
