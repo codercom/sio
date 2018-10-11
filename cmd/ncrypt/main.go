@@ -42,7 +42,7 @@ import (
 	"sort"
 	"syscall"
 
-	"github.com/minio/sio"
+	"go.coder.com/sio"
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/crypto/ssh/terminal"
 )

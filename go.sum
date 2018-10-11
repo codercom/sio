@@ -1,3 +1,5 @@
+github.com/codercom/sio v0.0.0-20180327104954-6a41828a60f0 h1:lRU9G2NrZJH9UYiUkStidoJBYHU3dFL4pPn7KyyPjLE=
+github.com/codercom/sio v0.0.0-20180327104954-6a41828a60f0/go.mod h1:RAFSI6M06b3AVJBCbRmhyCy4Zm+HbA5SXV7M93tBIOo=
 go.coder.com/sio v0.0.0-20180327104954-6a41828a60f0 h1:fGx/ACvMxFRiSoaW1aLQw39lkcjmWs4EFcFVSuXZ7/0=
 go.coder.com/sio v0.0.0-20180327104954-6a41828a60f0/go.mod h1:5w1e4RDuU60dfdOPx3TOwoHCb4xhp1ptvZqhizzmY2M=
 golang.org/x/crypto v0.0.0-20181009213950-7c1a557ab941 h1:qBTHLajHecfu+xzRI9PqVDcqx7SdHj9d4B+EzSn3tAc=

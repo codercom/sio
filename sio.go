@@ -23,7 +23,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/minio/sio/internal/cpu"
+	"go.coder.com/sio/internal/cpu"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 

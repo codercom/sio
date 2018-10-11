@@ -452,8 +452,8 @@ var encryptedSizeTests = []struct {
 	size, encSize uint64
 	shouldFail    bool
 }{
-	{size: 0, encSize: 0},                                              // 0
-	{size: 1, encSize: 33},                                             // 1
+	{size: 0, encSize: 0},  // 0
+	{size: 1, encSize: 33}, // 1
 	{size: maxPayloadSize + 1, encSize: maxPayloadSize + 1 + 64},       // 2
 	{size: 2 * maxPayloadSize, encSize: 2*maxPayloadSize + 64},         // 3
 	{size: 2*maxPayloadSize + 17, encSize: 2*maxPayloadSize + 17 + 96}, // 4
@@ -480,8 +480,8 @@ var decryptedSizeTests = []struct {
 	size, decSize uint64
 	shouldFail    bool
 }{
-	{size: 0, decSize: 0},                                              // 0
-	{size: 33, decSize: 1},                                             // 1
+	{size: 0, decSize: 0},  // 0
+	{size: 33, decSize: 1}, // 1
 	{size: maxPayloadSize + 1 + 64, decSize: maxPayloadSize + 1},       // 2
 	{size: 2*maxPayloadSize + 64, decSize: 2 * maxPayloadSize},         // 3
 	{size: 2*maxPayloadSize + 17 + 96, decSize: 2*maxPayloadSize + 17}, // 4
